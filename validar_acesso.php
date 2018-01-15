@@ -23,6 +23,8 @@
 	{
 		// PARA EXPOLORAR O RETORNO DO SELECT (TRANSFORMANDO ESSE RESOURCE EM UM ARRAY)
 		$dadosUsuario = mysqli_fetch_array($resultadoId);
+                
+                //var_dump($dadosUsuario);die('in');
 
 		if( isset($dadosUsuario['usuario']) || isset($dadosUsuario['email']) )
 		{
