@@ -74,8 +74,8 @@
       // EXECUTAR QUERY (CONEXÃO, QUERY)
       if (mysqli_query($link, $sql))
       {
-         echo "Usuário Registrado com sucesso";
-         echo "<br>";
+         //echo "Usuário Registrado com sucesso";
+         header('Location: index.php');
       }
       else
       {
@@ -84,6 +84,6 @@
    }
    else
    {
-      header('Location: inscrevase.php?erro=2');
+      header('Location: inscrevase.php?erro_senha=2');
    }
 ?>
