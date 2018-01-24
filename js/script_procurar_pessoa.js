@@ -1,76 +1,145 @@
-$(document).ready(function(){
+$(document).ready(function () {
+   
+   //PARA CARREGAR A PÁGINA COM TODOS OS USUÁRIOS LISTADOS
+   
+   $.ajax({
+         // ENVIAREMOS NOSSA requisição para a página get_pessoas.php
+         url: 'get_pessoas.php',
+
+         // ATRAVÉS DO MÉTODO POST
+         method: 'post',
+
+         // INFORMAÇÕES ESSAS VINDO DO form_procurar_pessoa 
+         //(OQ NÓS MANDAREMOS PARA A URL DE INFORMAÇÃO)
+         data: {pessoa: '' },
+
+         success: function (data) {
+            $('#pessoas').html(data);
+            $('#pessoa').val('');
+
+            $('.btn_seguir').click(function () {
+
+               var id_usuario = $(this).data('id_usuario');
+               
+               //OCULTAR E EXIBIR O BOTÃO SEGUIR/ DEIXAR_SEGUIR
+               $('#btn_seguir_' + id_usuario).hide();
+               $('#btn_deixar_seguir_' + id_usuario).show();
+
+               $.ajax({
+                  url: 'seguir.php',
+
+                  method: 'post',
+
+                  //PASSA PARA O SCRIP seguir.php O ID DO USUÁRIO A SER SEGUIDO
+                  data: {seguir_id_usuario: id_usuario},
+
+                  success: function (data) {
+                     alert("Registro feito com sucesso");
+                  }
+               });
+
+            });
+
+            $('.btn_deixar_seguir').click(function () {
+
+               var id_usuario = $(this).data('id_usuario');
+
+               $('#btn_seguir_' + id_usuario).show();
+               $('#btn_deixar_seguir_' + id_usuario).hide();
+
+               $.ajax({
+
+                  url: 'deixar_seguir.php',
+
+                  method: 'post',
+
+                  data: {deixar_seguir_id_usuario: id_usuario},
+
+                  success: function (data) {
+                     alert("Registro removido com sucesso");
+                  }
+               });
+
+
+            });
+
+         }
+
+      });
+   
 
 // ###########################################################################################
 // ##################################PROCURAR PESSOAS#########################################
 // ###########################################################################################
-	
-	
+ 
+   $('#btn_procurar_pessoa').click(function () {
 
-	$('#btn_procurar_pessoa').click(function()
-	{
+      $.ajax({
+         // ENVIAREMOS NOSSA requisição para a página get_pessoas.php
+         url: 'get_pessoas.php',
 
-		if($('#pessoa').val().length >0)
-		{
-			$.ajax(
-			{
-				// ENVIAREMOS NOSSA requisição para a página get_pessoas.php
-				url:'get_pessoas.php',
+         // ATRAVÉS DO MÉTODO POST
+         method: 'post',
 
-				// ATRAVÉS DO MÉTODO POST
-				method: 'post',
+         // INFORMAÇÕES ESSAS VINDO DO form_procurar_pessoa 
+         //(OQ NÓS MANDAREMOS PARA A URL DE INFORMAÇÃO)
+         data: $('#form_procurar_pessoa').serialize(),
 
-				// INFORMAÇÕES ESSAS VINDO DO form_procurar_pessoa 
-				//(OQ NÓS MANDAREMOS PARA A URL DE INFORMAÇÃO)
-				data : $('#form_procurar_pessoa').serialize(),
+         success: function (data) {
+            $('#pessoas').html(data);
+            $('#pessoa').val('');
 
-				success: function(data)
-				{
-					$('#pessoas').html(data);
+            $('.btn_seguir').click(function () {
 
-					// $('#pessoa').val('');
+               var id_usuario = $(this).data('id_usuario');
+               
+               //OCULTAR E EXIBIR O BOTÃO SEGUIR/ DEIXAR_SEGUIR
+               $('#btn_seguir_' + id_usuario).hide();
+               $('#btn_deixar_seguir_' + id_usuario).show();
 
-					$('.btn_seguir').click(function(){
-						var id_usuario = $(this).data('id_usuario');
-						$.ajax(
-						{
-							url:'seguir.php',
-							method:'post',
+               $.ajax({
+                  url: 'seguir.php',
 
-							data:{ seguir_id_usuario: id_usuario },
+                  method: 'post',
 
-							success:function(data)
-							{
-								alert("Registro feito com sucesso");
-							}
+                  //PASSA PARA O SCRIP seguir.php O ID DO USUÁRIO A SER SEGUIDO
+                  data: {seguir_id_usuario: id_usuario},
 
-						});
+                  success: function (data) {
+                     alert("Registro feito com sucesso");
+                  }
+               });
 
-					});
+            });
 
-					$('.btn_deixar_seguir').click(function(){
-						var id_usuario = $(this).data('id_usuario');
-						$.ajax(
-						{
-							url:'deixar_seguir.php',
-							method:'post',
+            $('.btn_deixar_seguir').click(function () {
 
-							data:{ deixar_seguir_id_usuario: id_usuario },
+               var id_usuario = $(this).data('id_usuario');
 
-							success:function(data)
-							{
-								alert("Registro removido com sucesso");
-							}
+               $('#btn_seguir_' + id_usuario).show();
+               $('#btn_deixar_seguir_' + id_usuario).hide();
 
-						});
+               $.ajax({
 
-						// alert("Deixar de seguir o id: "+id_usuario);
-					});
-	
-				}
-			});
-		}
+                  url: 'deixar_seguir.php',
 
-	});
+                  method: 'post',
+
+                  data: {deixar_seguir_id_usuario: id_usuario},
+
+                  success: function (data) {
+                     alert("Registro removido com sucesso");
+                  }
+               });
+
+
+            });
+
+         }
+
+      });
+
+   });
 
 
 });

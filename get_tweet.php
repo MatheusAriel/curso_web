@@ -1,50 +1,46 @@
 <?php
-	session_start();
 
-	if(!isset($_SESSION['usuario']))
-	{
-		header('Location:index.php?erro=1');
-	}
+   require_once("db.class.php");
+   session_start();
 
-	require_once("db.class.php");
+   if (!isset($_SESSION['usuario']))
+   {
+      header('Location:index.php?erro=1');
+   }
+   $id_usuario = $_SESSION['id_usuario'];
 
-	$id_usuario = $_SESSION['id_usuario'];
+   $objDb = new Db();
+   $link = $objDb->conecta_mysql();
 
-
-	$objDb = new Db();
-	$link = $objDb->conecta_mysql();
-
-	$sql = " SELECT  DATE_FORMAT(t.data_inclusao, '%d %b %Y %T') AS data_inclusao_formatada, t.tweet, u.usuario 
+   $sql = " SELECT  DATE_FORMAT(t.data_inclusao, '%d %b %Y - %H:%i') AS data_inclusao_formatada, t.tweet, u.usuario 
 		FROM tweet t JOIN usuarios u ON (t.id_usuario = u.id) 
-		WHERE t.id_usuario = $id_usuario 
+		WHERE t.id_usuario = $id_usuario
+                OR t.id_usuario IN( SELECT seguindo_id_usuario FROM usuarios_seguidores WHERE id_usuario = $id_usuario )   
 		ORDER BY data_inclusao DESC; ";
 
-	$resultado_id = mysqli_query($link, $sql);
-	
-	if($resultado_id)
-	{
-		while ( $registro = mysqli_fetch_array($resultado_id, MYSQLI_ASSOC) ) 
-		{
-			// echo "<pre>";
-			// 	echo var_dump(mysqli_fetch_array($resultado_id, MYSQLI_ASSOC));
-			// echo "</pre>";
+   $resultado_id = mysqli_query($link, $sql);
 
-			echo '<a href="#" class="list-group-item"> ';
+   if ($resultado_id)
+   {
+      while ($registro = mysqli_fetch_array($resultado_id, MYSQLI_ASSOC))
+      {
+         // echo "<pre>";
+         //var_dump(mysqli_fetch_array($resultado_id, MYSQLI_ASSOC));
 
-				echo 
-				'<h4 class="list-group-item-heading">'.
-					$registro['usuario'] .'<small> - '.$registro['data_inclusao_formatada'].'</small>
-				</h4>';
-				
-				echo '<p class="list-group-item-text">'.$registro['tweet'].'</p>';
-
-			echo '<a/>';
-		}
-
-	}
-	else
-	{
-		echo "Erro na consulta de tweets no bd...";
-	}
-
+         echo '<div class="list-group">';
+            echo '<a href="#" class="list-group-item list-group-item-action flex-column align-items-start"> ';
+               echo '<div class="d-flex w-100 justify-content-between">'
+                     . '<h4 class="mb-1"> <strong>' . $registro['usuario']
+                        . '</strong><small class="text-muted"> - ' . $registro['data_inclusao_formatada'] . '</small>'
+                     . '</h4>'
+               .   '</div>';
+               echo '<p class="mb-1">' . $registro['tweet'] . '</p>';
+            echo '<a/>';
+         echo '</div>';
+      }
+   }
+   else
+   {
+      echo "Erro na consulta de tweets no bd...";
+   }
 ?>

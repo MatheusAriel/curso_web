@@ -9,9 +9,11 @@ $(document).ready(function () {
 
    $('#btn_tweet').click(function () {
 
-      if ($('#texto_tweet').val().length > 0)
-      {
+      var textoTweet = $('#texto_tweet').val();
 
+
+      if (textoTweet != '' && textoTweet.length <= 140)
+      {
          $.ajax({
             //PARA ONDE VAI SER FEITO ESSA REQUISIÇÃO
             url: 'inclui_tweet.php',
@@ -30,9 +32,9 @@ $(document).ready(function () {
             data: $('#form_tweet').serialize(),
 
             //OQ DEVE ACONTECER CASO HAJA SUCESSO NESSA REQUISIÇÃO
-            // O DATA RECUPERA O CONTEUDO DA URL INFORMADA ACIMA
+            // O DATA RECUPERA O CONTEUDO DA URL INFORMADA ACIMA (inclui_tweet.php)
             success: function (data) {
-               
+
                // alert("Tweet incluido com sucesso");
                if (data == 'Erro ao inserir o tweet')
                {
@@ -41,26 +43,29 @@ $(document).ready(function () {
 
                $('#texto_tweet').val('');
                atualizaTweet();
-
             }
 
          });
 
       }
+      else if (textoTweet.length > 140)
+      {
+         alert('Maior que 140 caracteres');
+      }
 
    });
 
 
-   // CARREGA OS TWETTES APÓS A REQUISIÇÃO GET_TWETT()
    function atualizaTweet() {
       $.ajax({
-         
+
          url: 'get_tweet.php',
-         
+
          success: function (data) {
+            //INSERE O RETORNO DE GET_TWEET DENTRO A DIV_TWEET
             $('#div_tweet').html(data);
          }
-         
+
       });
    }
 

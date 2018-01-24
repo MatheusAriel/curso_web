@@ -7,6 +7,41 @@
       // header('Location: index.php?erro=1');
       header('Location: inscrevase.php');
    }
+   
+   $usuario = $_SESSION['id_usuario'];
+   
+   require_once("db.class.php");
+   
+   $objDb = new Db();
+   $link = $objDb->conecta_mysql();
+   
+   //RECUPERA QTD TWEETES
+   $sql = "SELECT COUNT(*) AS qtd_tweets FROM tweet WHERE id_usuario = $usuario";
+   $resultado_id = mysqli_query($link, $sql);
+   $qtd_tweetes = 0;
+   if ($resultado_id)
+   {
+    $registro = mysqli_fetch_array($resultado_id, MYSQLI_ASSOC);
+    $qtd_tweetes = $registro['qtd_tweets'];
+   }
+   else
+   {
+      echo 'erro ao executar a query';
+   }
+   
+   //RECUPERA QTD SEGUIDORES
+   $sql = "SELECT COUNT(*) AS qtd_seguidores FROM usuarios_seguidores WHERE seguindo_id_usuario = $usuario";
+   $resultado_id = mysqli_query($link, $sql);
+   $qtd_seguidores = 0;
+   if ($resultado_id)
+   {
+    $registro = mysqli_fetch_array($resultado_id, MYSQLI_ASSOC);
+    $qtd_seguidores = $registro['qtd_seguidores'];
+   }
+   else
+   {
+      echo 'erro ao executar a query';
+   }
 
 
 
@@ -81,26 +116,21 @@
 
          <div class="col-md-3">
             <div class="panel panel-primary">
+
                <div class="panel-heading">
                   <h4> <?= $_SESSION['usuario'] ?> </h4>
                </div>
 
                <div class="panel-body">
-
                   <div class="col-md-6">
-                     Tweets<br>1
-
+                     Tweets<br><?php echo $qtd_tweetes; ?>
                   </div>
-
                   <div class="col-md-6">
-                     Seguidores<br>1
-
+                     Seguidores<br><?php echo $qtd_seguidores; ?>
                   </div>
+               </div><!-- FIM PANEL-BODY-->
 
-               </div>
-            </div>
-
-
+            </div><!-- FIM PANEL-->
          </div><!-- FIM COL MD3 -->
 
          <div class="col-md-6">
@@ -109,7 +139,7 @@
                <div class="panel-body">
                   <form id="form_tweet" class="input-group">
 
-                     <input type="text" id="texto_tweet" name="texto" class="form-control" placeholder="O que esta acontecendo agora?" maxlength="140">
+                     <input type="text" id="texto_tweet" name="texto_tweet" class="form-control" placeholder="O que esta acontecendo agora?" maxlength="140">
 
                      <span class="input-group-btn">
                         <button class="btn btn-primary" id="btn_tweet" type="button">Tweetar</button>	
@@ -119,22 +149,22 @@
                </div><!-- FIM panel-body -->
             </div><!-- FIM panel -->
 
-            <div class="row">
-               <div id="div_tweet" class="list-group col-md-12">
 
-               </div>
+            <div id="div_tweet" class="list-group">
+
             </div>
+
 
          </div><!-- FIM COL 6 -->
 
          <div class="col-md-3">
             <div class="panel panel-primary">
-               <div class="panel-body">
-                  <h4><a href="procurar_pessoas.php">Procurar por pessoas</a></h4>
-
+               <div class="panel-heading">
+                  <h4><a href="procurar_pessoas.php" style="color: white; text-align: center">Procurar por pessoas</a></h4>
                </div>
             </div>
          </div><!-- FIM COL MD3 -->
+
       </div><!-- FIM CONTAINER -->
 
       <script src="js/bootstrap.min.js"></script>
